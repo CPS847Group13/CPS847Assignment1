@@ -11,13 +11,14 @@ import sys
 import json
 from slackclient import SlackClient
 import urllib2
+
+
 # instantiate Slack client
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 # starterbot's user ID in Slack: value is assigned after the bot starts up
 starterbot_id = None
 
-API_KEY = 'ec48c3377c3121185eb753f9ce21fdbf'
-#weather_api_key = os.environ.get('API_KEY')
+weather_api_key = os.environ.get('API_KEY')
 
 #list is used for fixing typos
 city_list = [ ]
@@ -103,11 +104,7 @@ def NLP(sentence):
 def request(city):
     if not (city in city_dict):
         city = correct(city)
-    link = 'http://api.openweathermap.org/data/2.5/weather?id=' + str(city_dict[city]) + '&units=metric&APPID=' + API_KEY
-    #print 'reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' + link
-    #with urllib2.Request.urlopen('http://api.openweathermap.org/data/2.5/weather?id=' + str(city_dict[city]) + '&units=metric&appid=' + weather_api_key) as url:
-
-        #response = urllib2.urlopen('http://api.openweathermap.org/data/2.5/weather?q=toronto&APPID=ec48c3377c3121185eb753f9ce21fdbf')
+    link = 'http://api.openweathermap.org/data/2.5/weather?id=' + str(city_dict[city]) + '&units=metric&APPID=' + weather_api_key
     response = urllib2.urlopen(link)
 
     data = json.load(response)
