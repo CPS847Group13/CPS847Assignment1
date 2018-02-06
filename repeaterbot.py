@@ -130,7 +130,8 @@ def process_message(msg_echo):
 			
 def main():
 	#read in city list
-	with open('city.list.json', mode="r", encoding="utf-8") as f:
+	#change to city.list.min.json for all cities
+	with open('canada.list.min.json', mode="r", encoding="utf-8") as f:
 		json_cities = json.load(f)
 	
 	#create a dictionary of cities for id, and a list for corrections
