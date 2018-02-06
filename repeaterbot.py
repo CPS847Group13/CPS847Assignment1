@@ -53,91 +53,91 @@ def levenshtein(s1, s2):
         previous_row = current_row
     
     return previous_row[-1]
-	
+    
 #try to correct city based on the city list 
 #returns the closest city by name
 def correct(word):
-	min_dist = sys.maxsize
-	closest_word = None
-	for city in city_list:
-		dist = levenshtein(city, word)
-		if dist < min_dist:
-			min_dist = dist
-			closest_word = city
+    min_dist = sys.maxsize
+    closest_word = None
+    for city in city_list:
+        dist = levenshtein(city, word)
+        if dist < min_dist:
+            min_dist = dist
+            closest_word = city
 
-	return closest_word
+    return closest_word
 
-	
+    
 #poor man's NLP. It works!
 #return tuple(if this is a weather string, where to split the string)
 def is_weather_request(sentence):
-	sentence = sentence.lower()
-	max_distance = 16
+    sentence = sentence.lower()
+    max_distance = 16
 
-	if levenshtein("whats the weather in", sentence) < max_distance:
-		return (True,4)
-	
-	if levenshtein("whats weather in", sentence) < max_distance or levenshtein("whats weather for", sentence) < max_distance:
-		return (True, 3)
-	
-	if levenshtein("weather in", sentence) < max_distance or levenshtein("weather for", sentence) < max_distance:
-		return (True,2)
-	
-	if levenshtein("weather", sentence) < max_distance:
-		return (True,1)
+    if levenshtein("whats the weather in", sentence) < max_distance:
+        return (True,4)
+    
+    if levenshtein("whats weather in", sentence) < max_distance or levenshtein("whats weather for", sentence) < max_distance:
+        return (True, 3)
+    
+    if levenshtein("weather in", sentence) < max_distance or levenshtein("weather for", sentence) < max_distance:
+        return (True,2)
+    
+    if levenshtein("weather", sentence) < max_distance:
+        return (True,1)
 
-	return (False,0)
-	
+    return (False,0)
+    
 #split sentence to get city
 #returns city name minus question mark at the end
 def get_location(sentence, split_loc):
 
-	#remove question mark
-	if sentence[len(sentence)-1] == '?':
-		sentence = sentence[:-1]
+    #remove question mark
+    if sentence[len(sentence)-1] == '?':
+        sentence = sentence[:-1]
 
-	#split string
-	split = sentence.split(' ')[split_loc:]
+    #split string
+    split = sentence.split(' ')[split_loc:]
 
-	return " ".join(split)	
+    return " ".join(split)    
 
 #actually request the data 
 #returns string with current conditions
 def request(city):
-	if not (city in city_dict):
-		city = correct(city)
+    if not (city in city_dict):
+        city = correct(city)
 
-	with urllib.request.urlopen('http://api.openweathermap.org/data/2.5/weather?id=' + str(city_dict[city]) + '&units=metric&appid=' + weather_api_key) as url:
-		data = json.loads(url.read().decode())
-		return "Current weather in " + city + " is " + data["weather"][0]["description"] + " at " + str(data["main"]["temp"]) + "C"
+    with urllib.request.urlopen('http://api.openweathermap.org/data/2.5/weather?id=' + str(city_dict[city]) + '&units=metric&appid=' + weather_api_key) as url:
+        data = json.loads(url.read().decode())
+        return "Current weather in " + city + " is " + data["weather"][0]["description"] + " at " + str(data["main"]["temp"]) + "C"
 
 #process the message
 def process_message(msg_echo):
-	for update in msg_echo:
-		print('Update found...')
-		if 'type' in update and update['type'] == 'message':
-			message = parse_direct_mention(update["text"])
-			
-			(is_req, split) = is_weather_request(message)
-			
-			#if we're a request, change message to weather
-			if is_req:
-				city_name = get_location(message, split)
-				message = request(city_name)
-				
-			slack_client.rtm_send_message(update["channel"], message)
-	
-			
+    for update in msg_echo:
+        print('Update found...')
+        if 'type' in update and update['type'] == 'message':
+            message = parse_direct_mention(update["text"])
+            
+            (is_req, split) = is_weather_request(message)
+            
+            #if we're a request, change message to weather
+            if is_req:
+                city_name = get_location(message, split)
+                message = request(city_name)
+                
+            slack_client.rtm_send_message(update["channel"], message)
+    
+            
 def main():
-	#read in city list
-	#change to city.list.min.json for all cities
-	with open('canada.list.min.json', mode="r", encoding="utf-8") as f:
-		json_cities = json.load(f)
-	
-	#create a dictionary of cities for id, and a list for corrections
-	for city in json_cities:
-		city_dict[city["name"]] = city["id"]
-		city_list.append(city["name"])
+    #read in city list
+    #change to city.list.min.json for all cities
+    with open('canada.list.min.json', mode="r", encoding="utf-8") as f:
+        json_cities = json.load(f)
+    
+    #create a dictionary of cities for id, and a list for corrections
+    for city in json_cities:
+        city_dict[city["name"]] = city["id"]
+        city_list.append(city["name"])
 
 
     if slack_client.rtm_connect():
