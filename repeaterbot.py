@@ -113,7 +113,7 @@ def request(city):
 
 #process the message
 def process_message(msg_echo):
-	for update in msg_echo
+	for update in msg_echo:
 		print('Update found...')
 		if 'type' in update and update['type'] == 'message':
 			message = parse_direct_mention(update["text"])
@@ -129,6 +129,16 @@ def process_message(msg_echo):
 	
 			
 def main():
+	#read in city list
+	with open('city.list.json', mode="r", encoding="utf-8") as f:
+		json_cities = json.load(f)
+	
+	#create a dictionary of cities for id, and a list for corrections
+	for city in json_cities:
+		city_dict[city["name"]] = city["id"]
+		city_list.append(city["name"])
+
+
     if slack_client.rtm_connect():
         print('RepeaterBot has gone online...')
         while True:
