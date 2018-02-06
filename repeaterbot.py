@@ -9,6 +9,7 @@ import re
 import io
 import sys
 import urllib.request
+import json
 from slackclient import SlackClient
 
 # instantiate Slack client
