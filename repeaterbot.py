@@ -69,38 +69,34 @@ def correct(word):
     return closest_word
 
     
-#poor man's NLP. It works!
-#return tuple(if this is a weather string, where to split the string)
-def is_weather_request(sentence):
+#rich man's NLP
+#returns tuple(is weather request, city name)
+def NLP(sentence):
     sentence = sentence.lower()
-    max_distance = 16
-
-    if levenshtein("whats the weather in", sentence) < max_distance:
-        return (True,4)
     
-    if levenshtein("whats weather in", sentence) < max_distance or levenshtein("whats weather for", sentence) < max_distance:
-        return (True, 3)
-    
-    if levenshtein("weather in", sentence) < max_distance or levenshtein("weather for", sentence) < max_distance:
-        return (True,2)
-    
-    if levenshtein("weather", sentence) < max_distance:
-        return (True,1)
-
-    return (False,0)
-    
-#split sentence to get city
-#returns city name minus question mark at the end
-def get_location(sentence, split_loc):
-
     #remove question mark
     if sentence[len(sentence)-1] == '?':
         sentence = sentence[:-1]
+    
+    words = sentence.split(' ')
 
-    #split string
-    split = sentence.split(' ')[split_loc:]
-
-    return " ".join(split)    
+    #check for a combination of any of these
+    tests = [['whats','the','weather','like','in'], ['whats','the','weather','in'], ['hows','the','weather','in'], ['whats','the','weather','for'], ['weather','in'], ['weather','for'], ['weather']]
+    
+    for test in tests:
+        if len(test) >= len(words):
+            continue
+        total_dist = 0
+        
+        #test distance from each word
+        for i in range(0, len(test)):
+            total_dist += levenshtein(words[i], test[i])
+            
+        
+        if total_dist < 6:
+            return (True, " ".join(words[len(test):]).title())
+    
+    return (False, None)
 
 #actually request the data 
 #returns string with current conditions
@@ -119,11 +115,9 @@ def process_message(msg_echo):
         if 'type' in update and update['type'] == 'message':
             message = parse_direct_mention(update["text"])
             
-            (is_req, split) = is_weather_request(message)
-            
+            (is_req, city_name) = NLP(message)
             #if we're a request, change message to weather
             if is_req:
-                city_name = get_location(message, split)
                 message = request(city_name)
                 
             slack_client.rtm_send_message(update["channel"], message)
