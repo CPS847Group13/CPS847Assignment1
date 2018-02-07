@@ -94,7 +94,7 @@ def NLP(sentence):
             total_dist += levenshtein(words[i], test[i])
 
 
-        if total_dist < 6:
+        if total_dist < 3:
             return (True, " ".join(words[len(test):]).title())
 
     return (False, None)
@@ -116,18 +116,21 @@ def request(city):
 def process_message(msg_echo):
     for update in msg_echo:
         print(update)
-        if 'type' in update and update['type'] == 'message':
-            message = parse_direct_mention(update["text"])
+        try:
+            if 'type' in update and update['type'] == 'message':
+                message = parse_direct_mention(update["text"])
 
-            if message is None:
-                continue
-            
-            (is_req, city_name) = NLP(message)
-            #if we're a request, change message to weather
-            if is_req:
-                message = request(city_name)
+                if message is None:
+                    continue
+                
+                (is_req, city_name) = NLP(message)
+                #if we're a request, change message to weather
+                if is_req:
+                    message = request(city_name)
 
-            slack_client.rtm_send_message(update["channel"], message)
+                slack_client.rtm_send_message(update["channel"], message)
+        except e:
+            print(str(e))
 
 
 def main():
