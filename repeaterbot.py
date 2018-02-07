@@ -108,17 +108,20 @@ def request(city):
     response = urllib2.urlopen(link)
 
     data = json.load(response)
-    #print data
+    #return string to print
     return "Current weather in " + city + " is " + data["weather"][0]["description"] + " at " + str(data["main"]["temp"]) + "C"
 
 
 #process the message
 def process_message(msg_echo):
     for update in msg_echo:
-        print('Update found...')
+        print(update)
         if 'type' in update and update['type'] == 'message':
             message = parse_direct_mention(update["text"])
 
+            if message is None:
+                continue
+            
             (is_req, city_name) = NLP(message)
             #if we're a request, change message to weather
             if is_req:
@@ -143,7 +146,6 @@ def main():
         print('RepeaterBot has gone online...')
         while True:
             msg_echo = slack_client.rtm_read()
-            print(msg_echo)
             process_message(msg_echo)
             time.sleep(1)
     else:

@@ -1,0 +1,5 @@
+heroku git:remote -a repeaterbot
+git add .
+git commit -am "message"
+git push heroku master
+heroku scale worker=1
