@@ -15,8 +15,6 @@ import urllib2
 
 # instantiate Slack client
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
-# starterbot's user ID in Slack: value is assigned after the bot starts up
-starterbot_id = None
 
 weather_api_key = os.environ.get('API_KEY')
 
@@ -28,9 +26,18 @@ city_dict = { }
 MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
 
 def parse_direct_mention(message_text):
+	#for some reason starterbot_id outside of this scope returns None type
+    starterbot_id = slack_client.api_call("auth.test")["user_id"]
+
     matches = re.search(MENTION_REGEX, message_text)
+    
     # the first group contains the username, the second group contains the remaining message
-    return matches.group(2).strip() if matches else None
+    
+    if matches:
+        if not (matches.group(1) == starterbot_id):
+            return None
+    
+        return matches.group(2).strip()
 
 
 #used to find distance between two strings
@@ -129,7 +136,7 @@ def process_message(msg_echo):
                     message = request(city_name)
 
                 slack_client.rtm_send_message(update["channel"], message)
-        except e:
+        except Exception as e:
             print(str(e))
 
 
@@ -143,8 +150,7 @@ def main():
     for city in json_cities:
         city_dict[city["name"]] = city["id"]
         city_list.append(city["name"])
-
-
+        
     if slack_client.rtm_connect():
         print('RepeaterBot has gone online...')
         while True:
