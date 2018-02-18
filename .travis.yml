@@ -3,9 +3,6 @@ language: python
 install:
   - pip install codecov
 
-python:
-  - 2.7
-
 script:
   - coverage run tests.py
 
