@@ -4,7 +4,8 @@ import repeaterbot
 
 class TestMethods(unittest.TestCase):
 	def test_message(self):
-		response = repeaterbot.request("toronto")
+		toronto = "toronto"
+		response = repeaterbot.request(toronto)
 		self.assertIsNotNone(response)
 		
 		
