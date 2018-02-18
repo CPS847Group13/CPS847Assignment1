@@ -2,6 +2,7 @@ language: python
 
 install:
   - pip install codecov
+  - pip install slackclient
 
 script:
   - coverage run tests.py
