@@ -5,7 +5,7 @@ import repeaterbot
 class TestMethods(unittest.TestCase):
 	def test_message(self):
 		response = repeaterbot.request("toronto")
-		self.assertIsNotNote(response)
+		self.assertIsNotNone(response)
 		
 		
 if __name__ == '__main__':
