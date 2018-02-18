@@ -1,1 +1,5 @@
 language: python
+
+pip install codecov
+
+code cov --token=f81cc35a-5747-4103-b4c2-8b2484d24714
