@@ -9,3 +9,13 @@ script:
 
 after_success:
   - codecov --token=f81cc35a-5747-4103-b4c2-8b2484d24714
+
+deploy:
+  provider: s3
+  access_key_id: AKIAJNQ6EFUAN75YCXDA
+  secret_access_key:
+    secure: TDFx7tIF3UeOufNQ8BgV6EPjZyWDLnc7y7k6nE7Js1OUMjqAEWhzsOox/ctusjUF99RI6sFPCdW/s7/CuJIDoei6Of+IeYM6rDE8FxXrR5eWbv434Mzi2Hu6HEAAEfIa7GHtLMLx2r9uQP2d/T8+//p4X8gpVfczzoAup/f4syDgQ0+S1Sj9JXUbQFalMy2VPaEXKTqIWgBSfX8My2AhfT+3oLQUV680UsH6eSIKuyABWqv8rX91WKsED/8wIiC/4XqH6JjXB0BL6njtuxWaxifA49J/9GSgHzeA9peebAFsGCF9CCgJLEPj9pvdcI3+182c8sWc4aECwRePVm1lxFZpeZytgdNkz1TKu3s7fnp99ver4r7p+79ts48/zns52uBFasKj/ww4ZpAKek3wV9hzQEDdfsG9Z9FBcnOHAk7PrU4Y/1ahCBN4t/vs6jZjeQyT0X7aRmdlmbKq/FPeJf3WnsSenO9gGXLg402cO41P44JvXC1yHSpPAxO3dukvPOqIl+v1pEH7TSMiZSajhahRcYbnm4EdY4xuOD3OmhQSG4GahmmuWlFgW506FRmG/co0bB5+FCpJVHBtOGjhEsYjodSRPL1oI4ngPmWtArzwiEVECQFXgSm21Q8av/RAU4PigfMpMkCiv4bEehRFU2QvrzAjhUodM6Svq0o0hk=
+  bucket: durango-part2
+  local-dir: www/home_html
+  region: us-east-2
+  skip_cleanup: true
