@@ -19,5 +19,5 @@ deploy:
   local-dir: build
   region: us-east-2
   skip_cleanup: true
-on:
+  on:
     branch: num2
