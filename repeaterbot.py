@@ -13,20 +13,31 @@ from slackclient import SlackClient
 import urllib2
 
 
-# instantiate Slack client
-slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
-
-weather_api_key = os.environ.get('API_KEY')
+#instantiate Slack client in main so we don't create a bot for each unit test
+slack_client = None 
+#same with weather api
+weather_api_key = None
 
 #list is used for fixing typos
 city_list = [ ]
 #dict is used to store ID once we found the city
 city_dict = { }
 
+#read in city list
+#change to city.list.min.json for all cities
+with open('canada.list.min.json', mode="r") as f:
+    json_cities = json.load(f)
+
+#create a dictionary of cities for id, and a list for corrections
+for city in json_cities:
+    city_dict[city["name"]] = city["id"]
+    city_list.append(city["name"])
+        
+
 MENTION_REGEX = "^<@(|[WU].+?)>(.*)"
 
 def parse_direct_mention(message_text):
-	#for some reason starterbot_id outside of this scope returns None type
+    #for some reason starterbot_id outside of this scope returns None type
     starterbot_id = slack_client.api_call("auth.test")["user_id"]
 
     matches = re.search(MENTION_REGEX, message_text)
@@ -141,15 +152,8 @@ def process_message(msg_echo):
 
 
 def main():
-    #read in city list
-    #change to city.list.min.json for all cities
-    with open('canada.list.min.json', mode="r") as f:
-        json_cities = json.load(f)
-
-    #create a dictionary of cities for id, and a list for corrections
-    for city in json_cities:
-        city_dict[city["name"]] = city["id"]
-        city_list.append(city["name"])
+    slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
+    weather_api_key = os.environ.get('API_KEY')
         
     if slack_client.rtm_connect():
         print('RepeaterBot has gone online...')
