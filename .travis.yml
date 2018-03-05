@@ -14,7 +14,7 @@ deploy:
   provider: s3
   access_key_id: AKIAJOFY74EJZE4MALFQ
   secret_access_key:
-    secure: "hG8O1TEyEohhfoQ3C6qrBYAGEC4WL7i8n/83UXZ4dHuRy0uaYXZMgKRrbbDslUoYL+IIBrLFF0UG6e+Lw31uiOda5ujS45CAWkdY77xvaNshkM3NMegxJX8KLhg8GBkj5yK/WZDEoCKv+/3p2TAm4qDVPfQd1SCx/cN0s0t0WYS5enwQReY84KXWhaJvm2SiwyKJuJX2N53WH17D5eDRkVd9y5RyGlmAIjDiMn0rYicWVrb7PdLk6N99ho17w0GXwL8Qydwkj/93NfZTW7Sp4ewxphNVYAySSWJvTIt+2h3kQpwI1Zp02w4hAUvmHyv9558wg115EQf3SfTsei0Ed4MiGQVNhaF/cO4gYdfbhKIdd0YmiSCT56N4EmSXMsq4fZpyQpT0w1CpGcOQNjxCVuCVO1rAos8PMhcM9cdAdAdj+5ZBiqNXhZsHAnhlh0lD/1Cdrsy71LhBIweUdB0knsCS5VeKSw0f8/QHvCW4qrWNI++llOaWR8qIC3L3gwcSHsfd1O3WzRzoErTwmCEvbMBjC+vps7kziCJXv06LYXihDmaTTATaFwejPOaOfZyjZUfcgPD2fBVQ3GrQAGyt/XXNvUJE1XcjwGRBIwsu65i1MbSD3Bxg72si/vTgc7k2+gXv2ytNyLQofCoeFwL4iNoTN8/xHIafTdVAxiWgQLY="
+    secure: $AWS
   bucket: durango-part2
   endpoint: http://durango-part2.s3-website.us-east-2.amazonaws.com
   local-dir: build
